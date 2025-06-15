@@ -23,8 +23,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def read_index():
     return FileResponse("static/index.html")
 
-# You can manage your API key via environment variables or BaseSettings
-
 class Settings(BaseSettings):
     mistral_api_key: str = os.getenv("test1", "3ANq2PZ7RbZJS1pqJX5jiA09YFf1d1Ki")
 
@@ -40,7 +38,7 @@ def generate_answer_mistral(prompt: str) -> str:
         "Content-Type": "application/json"
     }
     body = {
-        "model": "mistral-small",  # or mistral-tiny / mistral-medium if available
+        "model": "mistral-small",
         "messages": [
             {"role": "system", "content": "You are a helpful and knowledgeable assistant."},
             {"role": "user", "content": prompt}
@@ -83,3 +81,8 @@ def ask_question(q: Question):
         "answer": answer,
         "resources": resources
     }
+
+# 👇 This allows you to run with `python main.py`
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
