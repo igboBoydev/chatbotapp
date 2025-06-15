@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Chatbot</title>
+</head>
+<body>
+  <h2>Ask a Question</h2>
+  <textarea type="text" id="question"></textarea> 
+  <button onclick="ask()">Ask</button>
+  <div id="result"></div>
+
+  <script>
+    async function ask() {
+      const question = document.getElementById("question").value;
+      const res = await fetch("http://localhost:8000/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: question }),
+      });
+      const data = await res.json();
+      let html = `<p><strong>Answer:</strong> ${data.answer}</p>`;
+      html += "<ul>";
+      data.resources.forEach(r => {
+        html += `<li><a href="${r.url}" target="_blank">${r.name}</a></li>`;
+      });
+      html += "</ul>";
+      document.getElementById("result").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
